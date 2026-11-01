@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="sk" data-lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Strojársky kalkulátor – tolerancie, závity, otáčky a časovač pre iPhone</title>
+<meta name="description" content="Strojársky kalkulátor pre iPhone: tolerancie ISO 286, uloženia, závity a vrták pod závit, otáčky a posuv, materiály, časovač strojov a dochádzka. Úplne offline, bez reklám, v 11 jazykoch.">
+<meta property="og:title" content="Strojársky kalkulátor">
+<meta property="og:description" content="Tolerancie, závity, otáčky a posuv, materiály, časovač strojov a dochádzka – v jednej aplikácii, úplne offline.">
+<meta property="og:image" content="img/og.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0E1218">
+<link rel="icon" href="img/icon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+*{box-sizing:border-box}
+body{margin:0}
+/* Farby ako v aplikácii: tmavý grafit a oranžová; svetlá verzia pre svetlý režim */
+:root{
+  --bg:#0B0F15; --bg2:#121821; --card:#171E29; --line:#273142; --text:#E8EDF4; --muted:#9AA6B6;
+  --accent:#F28C28; --accent2:#F7A85C; --on:#16100A; --ok:#3DDC84;
+  --font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){--bg:#F1F3F7; --bg2:#E7EBF1; --card:#FFFFFF; --line:#DCE1E8; --text:#18202C; --muted:#5D6878; --accent:#E07A12; --accent2:#B45F0A; color-scheme:light}
+}
+:root[data-theme="light"]{--bg:#F1F3F7; --bg2:#E7EBF1; --card:#FFFFFF; --line:#DCE1E8; --text:#18202C; --muted:#5D6878; --accent:#E07A12; --accent2:#B45F0A; color-scheme:light}
+html[data-lang="sk"] [data-l="en"], html[data-lang="en"] [data-l="sk"]{display:none !important}
+body{background:var(--bg); color:var(--text); font-family:var(--font); font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased}
+a{color:var(--accent)} a:hover{color:var(--accent2)}
+.wrap{max-width:1120px; margin:0 auto; padding-left:max(16px,env(safe-area-inset-left)); padding-right:max(16px,env(safe-area-inset-right))}
+
+/* hlavička */
+.top{position:sticky; top:0; z-index:5; background:color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-bottom:1px solid var(--line)}
+.top .wrap{display:flex; align-items:center; gap:14px; min-height:64px; flex-wrap:wrap}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); font-weight:800; font-size:17px; margin-right:auto}
+.brand img{width:36px; height:36px; border-radius:9px}
+.top nav{display:flex; gap:4px; flex-wrap:wrap}
+.top nav a{color:var(--muted); text-decoration:none; font-weight:600; font-size:15px; padding:8px 10px; border-radius:10px}
+.top nav a:hover{color:var(--text); background:var(--bg2)}
+.lang{display:flex; border:1px solid var(--line); border-radius:999px; overflow:hidden}
+.lang button{font:inherit; font-weight:700; font-size:13px; border:0; background:none; color:var(--muted); padding:6px 12px; cursor:pointer; min-height:36px}
+.lang button[aria-pressed="true"]{background:var(--accent); color:var(--on)}
+@media (max-width:640px){ .top nav{display:none} }
+
+/* úvod */
+.hero{position:relative; overflow:hidden; border-bottom:1px solid var(--line);
+  background:radial-gradient(ellipse 700px 460px at 75% 35%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 70%), var(--bg)}
+.hero::before{content:""; position:absolute; inset:0; pointer-events:none; opacity:.6;
+  background-image:linear-gradient(color-mix(in srgb, var(--text) 5%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--text) 5%, transparent) 1px, transparent 1px);
+  background-size:44px 44px; mask-image:linear-gradient(180deg,#000,transparent 85%); -webkit-mask-image:linear-gradient(180deg,#000,transparent 85%)}
+.hero .wrap{position:relative; display:flex; flex-wrap:wrap; align-items:center; gap:24px 40px; padding-block:56px 48px}
+.hero .txt{flex:1 1 420px; min-width:0}
+.hero .ic{width:84px; height:84px; border-radius:20px; box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.hero h1{font-size:clamp(42px, 7vw, 72px); line-height:1.02; letter-spacing:-1.5px; margin:20px 0 0; font-weight:800; text-wrap:balance}
+.hero h1 em{font-style:normal; color:var(--accent)}
+.hero .lead{font-size:clamp(17px, 2.2vw, 20px); color:var(--muted); margin:18px 0 0; max-width:36em; text-wrap:pretty}
+.cta{display:flex; flex-wrap:wrap; gap:12px; margin-top:26px; align-items:center}
+.btn{display:inline-flex; align-items:center; gap:10px; min-height:48px; padding:12px 22px; border-radius:14px; font-weight:800; font-size:16px; text-decoration:none; border:0; cursor:pointer; font-family:inherit}
+.btn.primary{background:var(--accent); color:var(--on); box-shadow:0 8px 24px color-mix(in srgb, var(--accent) 35%, transparent)}
+.btn.primary:hover{color:var(--on); filter:brightness(1.06)}
+.btn.ghost{background:var(--card); color:var(--text); border:1px solid var(--line)}
+.btn svg{width:22px; height:22px}
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:22px}
+.chips span{font-size:14px; font-weight:600; padding:6px 12px; border-radius:999px; background:var(--card); border:1px solid var(--line); color:var(--muted)}
+.phones{flex:1 1 360px; display:flex; justify-content:center; gap:0; min-height:420px; position:relative}
+.phone{width:min(46%, 230px); border-radius:34px; padding:7px; background:linear-gradient(145deg,#3A424E,#12161C 45%,#2A313B); box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.phone img{display:block; width:100%; height:auto; border-radius:28px}
+.phones .phone:first-child{transform:rotate(-5deg) translateY(10px); margin-right:-14px}
+.phones .phone:last-child{transform:rotate(5deg) translateY(-14px)}
+
+/* sekcie */
+section{padding-block:64px; border-bottom:1px solid var(--line)}
+.kicker{font-size:13px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--accent)}
+h2{font-size:clamp(28px, 4.2vw, 40px); line-height:1.12; letter-spacing:-.6px; margin:8px 0 10px; font-weight:800; text-wrap:balance}
+.sub{color:var(--muted); max-width:42em; margin:0 0 28px}
+.grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap:14px}
+.f{background:var(--card); border:1px solid var(--line); border-radius:20px; padding:20px}
+.f .g{width:46px; height:46px; border-radius:13px; display:grid; place-items:center; font-weight:800; font-size:21px;
+  background:color-mix(in srgb, var(--accent) 15%, transparent); color:var(--accent)}
+.f h3{margin:14px 0 6px; font-size:18px; line-height:1.3}
+.f p{margin:0; color:var(--muted); font-size:15.5px}
+
+.shots{display:flex; gap:16px; overflow-x:auto; padding:6px 2px 18px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch}
+.shots figure{margin:0; flex:none; width:220px; scroll-snap-align:start}
+.shots img{display:block; width:100%; height:auto; border-radius:24px; border:1px solid var(--line)}
+.shots figcaption{font-size:14px; color:var(--muted); margin-top:8px; text-align:center; font-weight:600}
+
+.why{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap:14px}
+.why div{background:var(--card); border:1px solid var(--line); border-radius:18px; padding:18px}
+.why b{display:block; font-size:18px} .why span{color:var(--muted); font-size:15px}
+
+details{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:0 18px; margin-bottom:10px}
+summary{cursor:pointer; font-weight:700; padding:16px 0; list-style:none; display:flex; gap:12px; align-items:center; min-height:48px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+"; margin-left:auto; color:var(--accent); font-size:22px; font-weight:800; line-height:1}
+details[open] summary::after{content:"–"}
+details p, details ol, details ul{margin:0 0 16px; color:var(--muted)}
+details li{margin-bottom:4px}
+
+.contact{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap:14px}
+.box{background:var(--card); border:1px solid var(--line); border-radius:20px; padding:22px}
+.mail{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:10px 0}
+.mail code{font-family:inherit; font-weight:800; font-size:19px; padding:6px 12px; border:2px dashed var(--accent); border-radius:12px; word-break:break-all; user-select:all}
+.note{font-size:14.5px; color:var(--muted)}
+footer{padding-block:28px 40px; color:var(--muted); font-size:14px}
+footer .wrap{display:flex; flex-wrap:wrap; gap:8px 18px; align-items:center}
+footer a{color:var(--muted)}
+:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#"><img src="img/icon.png" alt=""><span data-l="sk">Strojársky kalkulátor</span><span data-l="en">Strojársky kalkulátor</span></a>
+    <nav aria-label="Menu">
+      <a href="#funkcie"><span data-l="sk">Funkcie</span><span data-l="en">Features</span></a>
+      <a href="#ukazky"><span data-l="sk">Ukážky</span><span data-l="en">Screenshots</span></a>
+      <a href="#pomoc"><span data-l="sk">Pomoc</span><span data-l="en">Help</span></a>
+      <a href="#kontakt"><span data-l="sk">Kontakt</span><span data-l="en">Contact</span></a>
+      <a href="privacy.html"><span data-l="sk">Súkromie</span><span data-l="en">Privacy</span></a>
+    </nav>
+    <div class="lang" role="group" aria-label="Jazyk / Language">
+      <button type="button" data-set="sk" aria-pressed="true">SK</button>
+      <button type="button" data-set="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="txt">
+      <img class="ic" src="img/icon.png" alt="">
+      <h1 data-l="sk">Všetko pre <em>CNC</em> a dielňu v jednom iPhone</h1>
+      <h1 data-l="en">Everything for <em>CNC</em> and the shop floor on your iPhone</h1>
+      <p class="lead" data-l="sk">Tolerancie ISO 286, uloženia, závity s vrtákom pod závit, otáčky a posuv, materiály, časovač pre každý stroj a dochádzka. Rýchlo, prehľadne a úplne offline – aj tam, kde v hale nie je signál.</p>
+      <p class="lead" data-l="en">ISO 286 tolerances, fits, threads with tap drill sizes, speeds and feeds, materials, a timer for every machine and attendance tracking. Fast, clear and fully offline – even where there is no signal on the shop floor.</p>
+      <div class="cta">
+        <a class="btn primary" id="appstore" href="#">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.5 2-3.6 2.1-3.7-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.1 2.5-1.8 3.1-.5 7.6 1.3 10.1.8 1.2 1.8 2.6 3.1 2.5 1.2 0 1.7-.8 3.2-.8s1.9.8 3.2.8c1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.4-1-2.5-4.2zM14 5.3c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4z"/></svg>
+          <span class="as-txt"><span data-l="sk">Stiahnuť v App Store</span><span data-l="en">Download on the App Store</span></span>
+        </a>
+        <a class="btn ghost" href="#ukazky"><span data-l="sk">Pozrieť ukážky</span><span data-l="en">See screenshots</span></a>
+      </div>
+      <div class="chips">
+        <span data-l="sk">Offline</span><span data-l="en">Offline</span>
+        <span data-l="sk">Bez reklám</span><span data-l="en">No ads</span>
+        <span data-l="sk">Bez registrácie</span><span data-l="en">No sign-up</span>
+        <span data-l="sk">11 jazykov</span><span data-l="en">11 languages</span>
+        <span data-l="sk">mm aj palce</span><span data-l="en">mm &amp; inch</span>
+      </div>
+    </div>
+    <div class="phones" aria-hidden="true">
+      <div class="phone"><img data-l="sk" src="img/sk_1_home.jpg" alt=""><img data-l="en" src="img/en_1_home.jpg" alt=""></div>
+      <div class="phone"><img data-l="sk" src="img/sk_5_timer.jpg" alt=""><img data-l="en" src="img/en_5_timer.jpg" alt=""></div>
+    </div>
+  </div>
+</div>
+
+<main>
+<section id="funkcie">
+  <div class="wrap">
+    <div class="kicker" data-l="sk">Funkcie</div><div class="kicker" data-l="en">Features</div>
+    <h2 data-l="sk">Čo nájdeš v aplikácii</h2><h2 data-l="en">What's inside</h2>
+    <p class="sub" data-l="sk">Pomôcka od praktika pre praktikov – na stroj, do dielne aj do kancelárie technológa.</p>
+    <p class="sub" data-l="en">A tool made by a machinist for machinists – at the machine, in the shop and in the planning office.</p>
+    <div class="grid">
+      <div class="f"><div class="g">Ø</div>
+        <h3 data-l="sk">Tolerancie otvorov a hriadeľov</h3><h3 data-l="en">Hole and shaft tolerances</h3>
+        <p data-l="sk">ISO 286 – polia A … Z aj a … z, stupne IT1 – IT18, horný a dolný medzný rozmer, stred tolerancie aj nákres.</p>
+        <p data-l="en">ISO 286 – fields A … Z and a … z, grades IT1 – IT18, upper and lower limits, mean size and a drawing.</p></div>
+      <div class="f"><div class="g">±</div>
+        <h3 data-l="sk">Uloženia a voľné tolerancie</h3><h3 data-l="en">Fits and general tolerances</h3>
+        <p data-l="sk">Vôľa, presah aj prechodné uloženie (napr. H7/g6) a voľné tolerancie ISO 2768.</p>
+        <p data-l="en">Clearance, interference and transition fits (e.g. H7/g6) and ISO 2768 general tolerances.</p></div>
+      <div class="f"><div class="g">⚙</div>
+        <h3 data-l="sk">Závity a vrták pod závit</h3><h3 data-l="en">Threads and tap drill sizes</h3>
+        <p data-l="sk">Metrické hrubé aj jemné, UNC, UNF, UNEF, Tr, Pg, G, R, NPT, BSW a BSF – rozmery, tolerancie a odporúčaný vrták.</p>
+        <p data-l="en">Metric coarse and fine, UNC, UNF, UNEF, Tr, Pg, G, R, NPT, BSW and BSF – dimensions, tolerances and recommended drill.</p></div>
+      <div class="f"><div class="g">⟳</div>
+        <h3 data-l="sk">Otáčky, posuv a čas</h3><h3 data-l="en">Speeds, feeds and time</h3>
+        <p data-l="sk">Sústruženie, frézovanie, frézy, vŕtanie a závitovanie podľa materiálu, s limitom otáčok stroja. K tomu sústruženie závitov s hĺbkou závitu a koncovým X.</p>
+        <p data-l="en">Turning, milling, end mills, drilling and tapping by material, with your machine's max RPM. Plus thread turning with thread depth and final X.</p></div>
+      <div class="f"><div class="g">▦</div>
+        <h3 data-l="sk">Materiály</h3><h3 data-l="en">Materials</h3>
+        <p data-l="sk">Skupiny materiálov, porovnanie označení a vlastnosti – stačí napísať napr. C45, 1.4301 alebo 42CrMo4.</p>
+        <p data-l="en">Material groups, equivalent designations and properties – just type C45, 1.4301 or 42CrMo4.</p></div>
+      <div class="f"><div class="g">⏱</div>
+        <h3 data-l="sk">Časovač pre každý stroj</h3><h3 data-l="en">A timer for every machine</h3>
+        <p data-l="sk">Ľubovoľný počet strojov s názvom a ikonou. Upozorní pred koncom a na konci zvoní aj pri zamknutom iPhone. 11 vlastných tónov.</p>
+        <p data-l="en">Any number of machines with a name and icon. Warns before the end and rings even when the iPhone is locked. 11 original tones.</p></div>
+      <div class="f"><div class="g">◷</div>
+        <h3 data-l="sk">Dochádzka a smeny</h3><h3 data-l="en">Attendance and shifts</h3>
+        <p data-l="sk">Príchody a odchody, prestávky, nadčasy, fond pracovného času a orientačný hrubý zárobok. Kalendár zmien vrátane 4-zmennej prevádzky.</p>
+        <p data-l="en">Clock-in and out, breaks, overtime, working-time fund and an estimate of gross pay. Shift calendar including 4-crew operation.</p></div>
+      <div class="f"><div class="g">✎</div>
+        <h3 data-l="sk">Kalkulačka a poznámky</h3><h3 data-l="en">Calculator and notes</h3>
+        <p data-l="sk">Kalkulačka s históriou, uhlami a výpočtom trojuholníka. Poznámky v priečinkoch s číslovaním a odrážkami.</p>
+        <p data-l="en">Calculator with history, angles and a triangle solver. Notes in folders with numbering and bullets.</p></div>
+      <div class="f"><div class="g">⌕</div>
+        <h3 data-l="sk">Jedno hľadanie na všetko</h3><h3 data-l="en">One search for everything</h3>
+        <p data-l="sk">Napíš H7, 25H7, M10, G 1/2 alebo C45 a hneď sa dostaneš tam, kam potrebuješ. Pamätá si posledné hľadania.</p>
+        <p data-l="en">Type H7, 25H7, M10, G 1/2 or C45 and jump straight to the result. Remembers recent searches.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="ukazky">
+  <div class="wrap">
+    <div class="kicker" data-l="sk">Ukážky</div><div class="kicker" data-l="en">Screenshots</div>
+    <h2 data-l="sk">Takto to vyzerá v iPhone</h2><h2 data-l="en">See it on iPhone</h2>
+    <div class="shots" data-l="sk">
+      <figure><img loading="lazy" src="img/sk_1_home.jpg" alt="Domov s hľadaním a skratkami"><figcaption>Domov</figcaption></figure>
+      <figure><img loading="lazy" src="img/sk_2_holes.jpg" alt="Tolerancie otvorov ISO 286"><figcaption>Tolerancie</figcaption></figure>
+      <figure><img loading="lazy" src="img/sk_3_threads.jpg" alt="Závit M8x1 a vrták pod závit"><figcaption>Závity</figcaption></figure>
+      <figure><img loading="lazy" src="img/sk_4_drill.jpg" alt="Otáčky a posuv pri vŕtaní"><figcaption>Výpočty</figcaption></figure>
+      <figure><img loading="lazy" src="img/sk_5_timer.jpg" alt="Časovač strojov"><figcaption>Časovač</figcaption></figure>
+      <figure><img loading="lazy" src="img/sk_6_search.jpg" alt="Vyhľadávanie M10"><figcaption>Hľadanie</figcaption></figure>
+      <figure><img loading="lazy" src="img/sk_7_work.jpg" alt="Dochádzka a nadčasy"><figcaption>Dochádzka</figcaption></figure>
+      <figure><img loading="lazy" src="img/sk_8_skins.jpg" alt="Štýly aplikácie"><figcaption>Štýly</figcaption></figure>
+    </div>
+    <div class="shots" data-l="en">
+      <figure><img loading="lazy" src="img/en_1_home.jpg" alt="Home with search and shortcuts"><figcaption>Home</figcaption></figure>
+      <figure><img loading="lazy" src="img/en_2_holes.jpg" alt="ISO 286 hole tolerances"><figcaption>Tolerances</figcaption></figure>
+      <figure><img loading="lazy" src="img/en_3_threads.jpg" alt="M8x1 thread and tap drill"><figcaption>Threads</figcaption></figure>
+      <figure><img loading="lazy" src="img/en_4_drill.jpg" alt="Drilling speeds and feeds"><figcaption>Calculations</figcaption></figure>
+      <figure><img loading="lazy" src="img/en_5_timer.jpg" alt="Machine timers"><figcaption>Timer</figcaption></figure>
+      <figure><img loading="lazy" src="img/en_6_search.jpg" alt="Search for M10"><figcaption>Search</figcaption></figure>
+      <figure><img loading="lazy" src="img/en_7_work.jpg" alt="Attendance and overtime"><figcaption>Attendance</figcaption></figure>
+      <figure><img loading="lazy" src="img/en_8_skins.jpg" alt="App themes"><figcaption>Themes</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kicker" data-l="sk">Prečo práve táto aplikácia</div><div class="kicker" data-l="en">Why this app</div>
+    <h2 data-l="sk">Rýchla, súkromná, vždy po ruke</h2><h2 data-l="en">Fast, private, always at hand</h2>
+    <div class="why">
+      <div><b data-l="sk">Úplne offline</b><b data-l="en">Fully offline</b><span data-l="sk">Funguje bez internetu, aj v hale bez signálu.</span><span data-l="en">Works without internet, even on a shop floor with no signal.</span></div>
+      <div><b data-l="sk">Žiadne údaje nikam</b><b data-l="en">Your data stays put</b><span data-l="sk">Bez reklám, bez sledovania, bez registrácie.</span><span data-l="en">No ads, no tracking, no account.</span></div>
+      <div><b data-l="sk">11 jazykov</b><b data-l="en">11 languages</b><span data-l="sk">Slovenčina, čeština, angličtina, nemčina, španielčina, poľština, ukrajinčina, ruština, hindčina, japončina, čínština.</span><span data-l="en">Slovak, Czech, English, German, Spanish, Polish, Ukrainian, Russian, Hindi, Japanese, Chinese.</span></div>
+      <div><b data-l="sk">Tvoj vzhľad</b><b data-l="en">Your look</b><span data-l="sk">22 štýlov, 20 pozadí, svetlý aj tmavý režim, mm aj palce.</span><span data-l="en">22 themes, 20 backgrounds, light and dark mode, mm and inch.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="pomoc">
+  <div class="wrap">
+    <div class="kicker" data-l="sk">Pomoc</div><div class="kicker" data-l="en">Help</div>
+    <h2 data-l="sk">Časté otázky</h2><h2 data-l="en">Frequently asked questions</h2>
+
+    <div data-l="sk">
+      <details><summary>Potrebuje aplikácia internet?</summary><p>Nie. Všetky tabuľky, výpočty aj údaje sú priamo v telefóne. Aplikácia nič neodosiela a nepotrebuje účet.</p></details>
+      <details><summary>Časovač nezvoní, keď je iPhone zamknutý.</summary>
+        <ol><li>Pri prvom štarte časovača povoľ upozornenia (Nastavenia iPhonu → Strojársky kalkulátor → Upozornenia).</li>
+        <li>Aplikáciu nezatváraj potiahnutím nahor – stačí ju nechať v pozadí alebo zamknúť telefón.</li>
+        <li>Skontroluj hlasitosť. Tón a dĺžku zvonenia nastavíš vo Viac → Nastavenia → Časovač (tlačidlo ▶ tón prehrá).</li></ol></details>
+      <details><summary>Ako zmením jazyk, vzhľad alebo jednotky (mm / palce)?</summary><p>Viac → Nastavenia. Jazyk sa predvolene riadi jazykom iPhonu. Štýl a pozadie zmeníš vo Viac → Štýl aplikácie.</p></details>
+      <details><summary>Ako si zálohujem údaje alebo ich prenesiem do nového telefónu?</summary><p>Viac → Nastavenia → Údaje → Zálohovať údaje. Vytvorí sa súbor, ktorý si uložíš napr. do Súborov alebo pošleš e-mailom. V novom telefóne ho načítaš cez Obnoviť zo zálohy. Záloha obsahuje poznámky, dochádzku, zmeny, časovače, históriu kalkulačky a nastavenia.</p></details>
+      <details><summary>Sú vypočítané rezné podmienky záväzné?</summary><p>Nie, sú orientačné. Skutočné hodnoty závisia od upnutia, nástroja, stroja a ďalších vplyvov. Vždy over hodnoty podľa odporúčaní výrobcu nástroja a vlastných skúseností.</p></details>
+      <details><summary>Ako si pridám vlastné skratky na úvodnú obrazovku?</summary><p>Domov → Obľúbené → Upraviť a vyber, čo chceš mať po ruke (napr. Vŕtanie, Závity, Časovač).</p></details>
+      <details><summary>Je dochádzka a zárobok presný?</summary><p>Ide o pomôcku na vlastnú evidenciu. Zárobok je orientačný hrubý výpočet podľa tvojej hodinovej sadzby a príplatkov, ktoré si nastavíš.</p></details>
+    </div>
+
+    <div data-l="en">
+      <details><summary>Does the app need internet?</summary><p>No. All tables, calculations and your data are stored on the phone. The app sends nothing and needs no account.</p></details>
+      <details><summary>The timer doesn't ring when my iPhone is locked.</summary>
+        <ol><li>Allow notifications when you start your first timer (iPhone Settings → Strojársky kalkulátor → Notifications).</li>
+        <li>Don't swipe the app away – just leave it in the background or lock the phone.</li>
+        <li>Check the volume. Choose the tone and ringing time in More → Settings → Timer (▶ plays the tone).</li></ol></details>
+      <details><summary>How do I change the language, look or units (mm / inch)?</summary><p>More → Settings. By default the language follows your iPhone. Change theme and background in More → App style.</p></details>
+      <details><summary>How do I back up my data or move it to a new phone?</summary><p>More → Settings → Data → Back up data. A file is created that you can save to Files or send by e-mail. On the new phone, load it with Restore from backup. The backup contains notes, attendance, shifts, timers, calculator history and settings.</p></details>
+      <details><summary>Are the cutting data binding?</summary><p>No, they are a guide only. Real values depend on clamping, the tool, the machine and other factors. Always check them against the tool maker's recommendations and your own experience.</p></details>
+      <details><summary>How do I add my own shortcuts to the home screen?</summary><p>Home → Favourites → Edit and pick what you want at hand (e.g. Drilling, Threads, Timer).</p></details>
+      <details><summary>Is the attendance pay exact?</summary><p>It's a tool for your own records. Pay is an estimated gross amount based on the hourly rate and bonuses you set.</p></details>
+    </div>
+  </div>
+</section>
+
+<section id="kontakt">
+  <div class="wrap">
+    <div class="kicker" data-l="sk">Kontakt</div><div class="kicker" data-l="en">Contact</div>
+    <h2 data-l="sk">Podpora a nápady</h2><h2 data-l="en">Support and ideas</h2>
+    <div class="contact">
+      <div class="box">
+        <p data-l="sk">Našli ste chybu, chýba vám nejaký výpočet alebo máte nápad? Napíšte mi, odpovedám zvyčajne do pár dní.</p>
+        <p data-l="en">Found a bug, missing a calculation or have an idea? Write to me – I usually reply within a few days.</p>
+        <div class="mail"><code id="mail">mmcncam@gmail.com</code>
+          <button class="btn ghost" type="button" id="copy"><span data-l="sk">Skopírovať</span><span data-l="en">Copy</span></button></div>
+        <p><span data-l="sk">Telefón:</span><span data-l="en">Phone:</span> <a href="tel:+421902360994">+421 902 360 994</a></p>
+        <p class="note" id="copied" hidden><span data-l="sk">Adresa je skopírovaná.</span><span data-l="en">Address copied.</span></p>
+      </div>
+      <div class="box">
+        <p class="note" data-l="sk">Pri hlásení chyby pomôže: model iPhonu, verzia iOS, verzia aplikácie (Viac → Licencia a upozornenie) a postup, ako chybu vyvolať. Snímka obrazovky veľmi pomôže.</p>
+        <p class="note" data-l="en">When reporting a bug, please include: iPhone model, iOS version, app version (More → Licence and notice) and the steps to reproduce it. A screenshot helps a lot.</p>
+        <p class="note"><a href="privacy.html"><span data-l="sk">Ochrana súkromia</span><span data-l="en">Privacy policy</span></a></p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Marcel Malovec</span>
+    <a href="privacy.html"><span data-l="sk">Ochrana súkromia</span><span data-l="en">Privacy policy</span></a>
+    <span data-l="sk">iPhone a App Store sú ochranné známky spoločnosti Apple Inc.</span>
+    <span data-l="en">iPhone and App Store are trademarks of Apple Inc.</span>
+  </div>
+</footer>
+
+<script>
+// Po zverejnení v App Store sem vlož odkaz na aplikáciu, napr. "https://apps.apple.com/sk/app/id1234567890"
+const APP_STORE_URL = "";
+
+(function () {
+  const root = document.documentElement;
+  function setLang(l) {
+    root.dataset.lang = l; root.lang = l;
+    document.querySelectorAll(".lang button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.set === l)));
+    try { localStorage.setItem("sk_lang", l); } catch (e) { /* bez úložiska */ }
+  }
+  let saved = null;
+  try { saved = localStorage.getItem("sk_lang"); } catch (e) { saved = null; }
+  const nav = (navigator.language || "sk").slice(0, 2).toLowerCase();
+  const q = new URLSearchParams(location.search).get("lang");
+  setLang(q === "en" || q === "sk" ? q : saved || (nav === "sk" || nav === "cs" ? "sk" : "en"));
+  document.querySelectorAll(".lang button").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.set)));
+
+  const as = document.getElementById("appstore");
+  if (APP_STORE_URL) as.href = APP_STORE_URL;
+  else { as.href = "#kontakt"; as.querySelector(".as-txt").innerHTML = '<span data-l="sk">Čoskoro v App Store</span><span data-l="en">Coming soon to the App Store</span>'; }
+
+  const copy = document.getElementById("copy"), done = document.getElementById("copied");
+  copy.addEventListener("click", () => {
+    const t = document.getElementById("mail").textContent;
+    const ok = () => { done.hidden = false; setTimeout(() => { done.hidden = true; }, 2500); };
+    if (navigator.clipboard) navigator.clipboard.writeText(t).then(ok, ok); else ok();
+  });
+})();
+</script>
+</body>
+</html>

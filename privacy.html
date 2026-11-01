@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="sk" data-lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ochrana súkromia – Strojársky kalkulátor</title>
+<meta name="description" content="Zásady ochrany súkromia aplikácie Strojársky kalkulátor pre iPhone.">
+<meta name="theme-color" content="#0E1218">
+<link rel="icon" href="img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
+<style>
+*{box-sizing:border-box}
+body{margin:0}
+:root{--bg:#0B0F15; --card:#171E29; --line:#273142; --text:#E8EDF4; --muted:#9AA6B6; --accent:#F28C28; --accent2:#F7A85C; --on:#16100A;
+  --font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color-scheme:dark}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){--bg:#F1F3F7; --card:#FFFFFF; --line:#DCE1E8; --text:#18202C; --muted:#5D6878; --accent:#E07A12; --accent2:#B45F0A; color-scheme:light} }
+:root[data-theme="light"]{--bg:#F1F3F7; --card:#FFFFFF; --line:#DCE1E8; --text:#18202C; --muted:#5D6878; --accent:#E07A12; --accent2:#B45F0A; color-scheme:light}
+html[data-lang="sk"] [data-l="en"], html[data-lang="en"] [data-l="sk"]{display:none !important}
+body{background:var(--bg); color:var(--text); font-family:var(--font); font-size:17px; line-height:1.65; -webkit-font-smoothing:antialiased}
+a{color:var(--accent)} a:hover{color:var(--accent2)}
+.wrap{max-width:760px; margin:0 auto; padding-left:max(16px,env(safe-area-inset-left)); padding-right:max(16px,env(safe-area-inset-right))}
+header{border-bottom:1px solid var(--line)}
+header .wrap{display:flex; align-items:center; gap:12px; min-height:64px; flex-wrap:wrap}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); font-weight:800; margin-right:auto}
+.brand img{width:36px; height:36px; border-radius:9px}
+.lang{display:flex; border:1px solid var(--line); border-radius:999px; overflow:hidden}
+.lang button{font:inherit; font-weight:700; font-size:13px; border:0; background:none; color:var(--muted); padding:6px 12px; cursor:pointer; min-height:36px}
+.lang button[aria-pressed="true"]{background:var(--accent); color:var(--on)}
+main{padding-block:40px 56px}
+h1{font-size:clamp(30px, 5vw, 42px); line-height:1.15; letter-spacing:-.6px; margin:0 0 8px; text-wrap:balance}
+.date{color:var(--muted); margin:0 0 28px}
+.card{background:var(--card); border:1px solid var(--line); border-radius:20px; padding:22px 24px; margin-bottom:14px}
+h2{font-size:20px; margin:0 0 6px}
+p{margin:0 0 10px} ul{margin:0 0 10px; padding-left:22px}
+.sum{border:2px solid var(--accent)}
+footer{padding-block:0 40px; color:var(--muted); font-size:14px}
+:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="img/icon.png" alt="">Strojársky kalkulátor</a>
+    <div class="lang" role="group" aria-label="Jazyk / Language">
+      <button type="button" data-set="sk" aria-pressed="true">SK</button>
+      <button type="button" data-set="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div data-l="sk">
+    <h1>Ochrana súkromia</h1>
+    <p class="date">Aplikácia Strojársky kalkulátor pre iPhone · platné od 1. novembra 2026</p>
+
+    <div class="card sum"><h2>Stručne</h2>
+      <p>Aplikácia nezbiera žiadne osobné údaje. Nemá účet, reklamy, analytiku ani sledovanie a na fungovanie nepotrebuje internet. Všetko, čo zadáte, ostáva iba vo vašom iPhone.</p></div>
+
+    <div class="card"><h2>Aké údaje aplikácia spracúva</h2>
+      <p>Údaje, ktoré do aplikácie sami zadáte, sa ukladajú iba v telefóne:</p>
+      <ul><li>nastavenia (jazyk, vzhľad, jednotky, obľúbené položky, posledné hľadania),</li>
+        <li>poznámky a priečinky,</li>
+        <li>dochádzka, zmeny a s nimi súvisiace nastavenia (napr. hodinová sadzba),</li>
+        <li>časovače strojov a história kalkulačky.</li></ul>
+      <p>Tieto údaje autor aplikácie nevidí, nedostáva ich a nikam sa neodosielajú. Zmažú sa spolu s aplikáciou. Ak máte zapnuté zálohovanie iPhonu do iCloudu, môžu byť súčasťou vašej zálohy iPhonu, ktorú spravuje Apple.</p></div>
+
+    <div class="card"><h2>Upozornenia</h2>
+      <p>Časovač strojov používa miestne upozornenia iPhonu (oznámenie a zvuk pred koncom a na konci odpočtu). Upozornenia sa plánujú priamo v telefóne, neposielajú sa cez žiadny server. Povolenie môžete kedykoľvek zmeniť v Nastaveniach iPhonu.</p></div>
+
+    <div class="card"><h2>Zvuk na pozadí</h2>
+      <p>Kým beží odpočet časovača, aplikácia môže zostať aktívna na pozadí, aby na konci zazvonila aj pri zamknutom telefóne. Nič sa pritom nenahráva – aplikácia nepoužíva mikrofón ani kameru.</p></div>
+
+    <div class="card"><h2>Záloha údajov</h2>
+      <p>Záloha sa vytvorí iba vtedy, keď ju sami spustíte (Nastavenia → Údaje). Vznikne súbor, o ktorom rozhodujete vy – kam ho uložíte alebo komu ho pošlete. Aplikácia ho nikam sama neposiela.</p></div>
+
+    <div class="card"><h2>Tretie strany a deti</h2>
+      <p>Aplikácia neobsahuje reklamy ani nástroje tretích strán na sledovanie či analytiku a nezdieľa žiadne údaje. Nezbiera údaje o nikom, ani o deťoch.</p></div>
+
+    <div class="card"><h2>Kontakt</h2>
+      <p>Otázky k ochrane súkromia: <a href="mailto:mmcncam@gmail.com">mmcncam@gmail.com</a>, tel. <a href="tel:+421902360994">+421 902 360 994</a>.<br>Prevádzkovateľ aplikácie: Marcel Malovec.</p>
+      <p>Pri zmene týchto zásad sa aktualizuje dátum na začiatku stránky.</p></div>
+  </div>
+
+  <div data-l="en">
+    <h1>Privacy policy</h1>
+    <p class="date">Strojársky kalkulátor for iPhone · effective 1 November 2026</p>
+
+    <div class="card sum"><h2>In short</h2>
+      <p>The app does not collect any personal data. It has no account, ads, analytics or tracking, and it does not need the internet to work. Everything you enter stays on your iPhone.</p></div>
+
+    <div class="card"><h2>What data the app handles</h2>
+      <p>Data you enter yourself is stored only on your phone:</p>
+      <ul><li>settings (language, look, units, favourites, recent searches),</li>
+        <li>notes and folders,</li>
+        <li>attendance, shifts and related settings (e.g. hourly rate),</li>
+        <li>machine timers and calculator history.</li></ul>
+      <p>The developer cannot see or receive this data and it is never sent anywhere. It is deleted together with the app. If iCloud Backup is turned on for your iPhone, it may be part of your iPhone backup, which is managed by Apple.</p></div>
+
+    <div class="card"><h2>Notifications</h2>
+      <p>The machine timer uses local iPhone notifications (a message and sound before and at the end of a countdown). They are scheduled on the device itself, not through any server. You can change the permission at any time in iPhone Settings.</p></div>
+
+    <div class="card"><h2>Background audio</h2>
+      <p>While a timer is counting down, the app may stay active in the background so it can ring at the end even when the phone is locked. Nothing is recorded – the app does not use the microphone or camera.</p></div>
+
+    <div class="card"><h2>Data backup</h2>
+      <p>A backup is only created when you start it yourself (Settings → Data). It produces a file you control – where you save it or who you send it to. The app never sends it anywhere on its own.</p></div>
+
+    <div class="card"><h2>Third parties and children</h2>
+      <p>The app contains no ads and no third-party tracking or analytics tools, and it shares no data. It collects no data about anyone, including children.</p></div>
+
+    <div class="card"><h2>Contact</h2>
+      <p>Privacy questions: <a href="mailto:mmcncam@gmail.com">mmcncam@gmail.com</a>, phone <a href="tel:+421902360994">+421 902 360 994</a>.<br>App provider: Marcel Malovec.</p>
+      <p>If this policy changes, the date at the top of the page will be updated.</p></div>
+  </div>
+</main>
+
+<footer><div class="wrap">© 2026 Marcel Malovec · <a href="index.html"><span data-l="sk">Späť na úvod</span><span data-l="en">Back to home</span></a></div></footer>
+
+<script>
+(function () {
+  const root = document.documentElement;
+  function setLang(l) {
+    root.dataset.lang = l; root.lang = l;
+    document.querySelectorAll(".lang button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.set === l)));
+    try { localStorage.setItem("sk_lang", l); } catch (e) { /* bez úložiska */ }
+  }
+  let saved = null;
+  try { saved = localStorage.getItem("sk_lang"); } catch (e) { saved = null; }
+  const q = new URLSearchParams(location.search).get("lang");
+  const nav = (navigator.language || "sk").slice(0, 2).toLowerCase();
+  setLang(q === "en" || q === "sk" ? q : saved || (nav === "sk" || nav === "cs" ? "sk" : "en"));
+  document.querySelectorAll(".lang button").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.set)));
+})();
+</script>
+</body>
+</html>
